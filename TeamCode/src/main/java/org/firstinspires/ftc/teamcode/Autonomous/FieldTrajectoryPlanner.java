@@ -1,3 +1,12 @@
+package org.firstinspires.ftc.teamcode.Autonomous;
+
+import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
+import com.acmerobotics.roadrunner.Vector2d;
+
+import org.firstinspires.ftc.teamcode.Robot;
+
 //package org.firstinspires.ftc.teamcode.Autonomous;
 //
 //
@@ -16,9 +25,42 @@
 //
 //import java.io.SequenceInputStream;
 //
-//public class FieldTrajectoryPlanner {
-//
-//    TrajectoryActionBuilder builder;
+public class FieldTrajectoryPlanner {
+
+    TrajectoryActionBuilder builder;
+    Robot robot;
+
+    public FieldTrajectoryPlanner(Robot robot) {
+        this.builder = robot.drive.actionBuilder(robot.startingPos);
+        this.robot = robot;
+
+    };
+    public FieldTrajectoryPlanner stepToShot() {
+        builder = builder.afterTime(0.1, new SequentialAction())
+                .strafeToLinearHeading(new Vector2d(18, 18), Math.toRadians(-90*robot.autoPos.yMult));
+        return this;
+    };
+
+    public FieldTrajectoryPlanner fireWholeMagazine() {
+        builder = builder.afterTime(.1, new SequentialAction())
+                .stopAndAdd(
+                        new SequentialAction(
+                                new SleepAction(.1),
+                                robot.launcher.FireAtY(32,72),
+                                new SleepAction(.5),
+                                robot.intake.runIntake(),
+                                new SleepAction(.5),
+                                robot.intake.reset(),
+                                robot.launcher.FireAtY(32, 72),
+                                new SleepAction(.5),
+                                robot.intake.runIntake(),
+                                new SleepAction(.5),
+                                robot.intake.reset(),
+                                robot.launcher.FireAtY(32, 72)
+                        ));
+        return this;
+    };
+
 //    Robot robot;
 //    public FieldTrajectoryPlanner(Robot robot) {
 //        this.builder = robot.drive.actionBuilder(robot.startingPos);
@@ -147,3 +189,4 @@
 //        return this;
 //    }
 //}
+}

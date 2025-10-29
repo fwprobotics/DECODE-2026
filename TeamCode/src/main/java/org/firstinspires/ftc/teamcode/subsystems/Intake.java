@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -11,12 +13,15 @@ public class Intake extends Subsystem {
 
         super(hardwareMap, telemetry);
         intakeMotor = hardwareMap.dcMotor.get("intake");
-        intakeMotor.setDirection(DcMotor.Direction.REVERSE);
-        intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        intakeMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 
-    public void runIntake()  {
-        intakeMotor.setPower(.7);
+    public Action runIntake()  {
+        return TelemetryPacket -> {
+        intakeMotor.setPower(1); return false;};
+    }
+    public Action reset()  {
+        return TelemetryPacket -> { intakeMotor.setPower(0);return false;};
     }
 }
