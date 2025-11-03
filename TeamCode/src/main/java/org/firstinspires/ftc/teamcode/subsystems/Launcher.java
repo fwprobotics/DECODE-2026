@@ -43,20 +43,24 @@ public class Launcher extends  Subsystem{
         rightLaunchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         leftLaunchMotor.setDirection(DcMotor.Direction.REVERSE);
     }
-    public Action FireAtY(float target_pos_y_in, float distance_in) {
+    public void FireAtY(float target_pos_y_in, float distance_in) {
         double velocity = distance_to_velocity(distance_in/12, Launch_angle, target_pos_y_in/12,  0);
         double motor_power = velocity_to_motor_power(velocity);
 
-        return telemetryPacket -> {
             leftLaunchMotor.setPower(velocity);
             rightLaunchMotor.setPower(velocity);
-            new SleepAction(.75);
+
+            new SleepAction(2.75);
             setFiringState(FiringState.FIRING);
             new SleepAction(.75);
             setFiringState(FiringState.LOADED);
             new SleepAction(.25);
-            leftLaunchMotor.setPower(0);
-            rightLaunchMotor.setPower(0);
+//            leftLaunchMotor.setPower(0);
+//            rightLaunchMotor.setPower(0);
+    }
+    public Action FireAtYAction(float target_pos_y_in, float distance_in) {
+        return telemetryPacket -> {
+            this.FireAtY(target_pos_y_in, distance_in);
             return false;
         };
     }
@@ -77,8 +81,9 @@ public class Launcher extends  Subsystem{
     public Action reset() {
         return TelemetryPacket -> {
             rightLaunchMotor.setPower((0));
-        leftLaunchMotor.setPower((0));
-        return false;};
+            leftLaunchMotor.setPower((0));
+            return false;
+        };
     };
     double velocity_to_motor_power (double velocity) {
         return Math.min(0.10857*velocity, 1);

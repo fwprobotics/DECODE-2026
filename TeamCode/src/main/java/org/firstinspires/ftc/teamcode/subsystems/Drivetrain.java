@@ -70,10 +70,10 @@ public class Drivetrain {
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
 
-        frontLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
         //  OpMode.idle();
@@ -106,8 +106,7 @@ public class Drivetrain {
                 LeftX = 0;
             } else if (LeftX > 0.10 && LeftY < 0.10) {
                 LeftY = 0;
-            }
-            //     if (slowModeControl) {
+            }//     if (slowModeControl) {
             frontLeftVal = ((LeftY - RightX) - LeftX);
             frontRightVal = ((LeftY + RightX) + LeftX);
             backLeftVal = ((LeftY - RightX) + LeftX);
@@ -117,25 +116,18 @@ public class Drivetrain {
 //                frontRightVal = cubeInput(((LeftY + RightX) + LeftX), TeleOpDTConstants.speedFactor);
 //                backLeftVal = cubeInput(((LeftY - RightX) + LeftX), TeleOpDTConstants.speedFactor);
 //                backRightVal = cubeInput(((LeftY + RightX) - LeftX), TeleOpDTConstants.speedFactor);
-//            }
-//            drive.setWeightedDrivePower(
-//                    new Pose2d(
-//                            -leftStickY,
-//                            -leftStickX,
-//                            -rightStickX
-//                    )
-//            );
-//            drive.update();
-
-            //   realTelemetry.addData("LeftX", LeftX);
-            //  realTelemetry.addData("RightX", RightX);
-            // realTelemetry.addData("LeftY", LeftY);
+//
 
 
         frontLeftDrive.setPower(frontLeftVal * slowModeMult * boostModeMult * TeleOpDTConstants.power_modifier);
         frontRightDrive.setPower(frontRightVal * slowModeMult * boostModeMult* TeleOpDTConstants.power_modifier);
         backLeftDrive.setPower(backLeftVal * slowModeMult * boostModeMult * TeleOpDTConstants.power_modifier);
         backRightDrive.setPower(backRightVal * slowModeMult  * boostModeMult  * TeleOpDTConstants.power_modifier);
+
+//        frontLeftDrive.setPower(.2);
+//        frontRightDrive.setPower(-.2);
+//        backLeftDrive.setPower( .2);
+//        backRightDrive.setPower( -.2);
 
         realTelemetry.addData("Front Left", frontLeftDrive.getCurrentPosition());
         realTelemetry.addData("Back Left", backLeftDrive.getCurrentPosition());

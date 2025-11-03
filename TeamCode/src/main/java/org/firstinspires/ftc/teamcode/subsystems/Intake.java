@@ -17,11 +17,21 @@ public class Intake extends Subsystem {
 
     }
 
-    public Action runIntake()  {
-        return TelemetryPacket -> {
-        intakeMotor.setPower(1); return false;};
+    public void runIntake()  {
+        intakeMotor.setPower(1);
     }
-    public Action reset()  {
-        return TelemetryPacket -> { intakeMotor.setPower(0);return false;};
+    public Action runIntakeAction () {
+            return TelemetryPacket -> {
+                this.runIntake();
+                return false;
+
+            };
+        }
+    public Action resetAction()  {
+        return TelemetryPacket -> { this.reset();return false;};
+    }
+
+    public void reset() {
+        intakeMotor.setPower(0);
     }
 }

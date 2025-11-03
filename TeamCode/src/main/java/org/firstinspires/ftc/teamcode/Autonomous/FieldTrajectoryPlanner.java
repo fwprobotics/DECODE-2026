@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
+import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
@@ -36,8 +37,8 @@ public class FieldTrajectoryPlanner {
 
     };
     public FieldTrajectoryPlanner stepToShot() {
-        builder = builder.afterTime(0.1, new SequentialAction())
-                .strafeToLinearHeading(new Vector2d(18, 18), Math.toRadians(-90*robot.autoPos.yMult));
+        builder = builder
+                .strafeToLinearHeading(new Vector2d(18, 18), Math.toRadians(-45*robot.autoPos.yMult));
         return this;
     };
 
@@ -46,17 +47,18 @@ public class FieldTrajectoryPlanner {
                 .stopAndAdd(
                         new SequentialAction(
                                 new SleepAction(.1),
-                                robot.launcher.FireAtY(32,72),
+                                robot.launcher.FireAtYAction(32,72),
+                                new SleepAction(1.5),
+                                robot.intake.runIntakeAction(),
                                 new SleepAction(.5),
-                                robot.intake.runIntake(),
+                                robot.intake.resetAction(),
+                                robot.launcher.FireAtYAction(32, 72),
+                                robot.intake.runIntakeAction(),
                                 new SleepAction(.5),
-                                robot.intake.reset(),
-                                robot.launcher.FireAtY(32, 72),
-                                new SleepAction(.5),
-                                robot.intake.runIntake(),
-                                new SleepAction(.5),
-                                robot.intake.reset(),
-                                robot.launcher.FireAtY(32, 72)
+                                robot.intake.resetAction(),
+                                robot.launcher.FireAtYAction(32, 72),
+        new SleepAction(1.5)
+
                         ));
         return this;
     };

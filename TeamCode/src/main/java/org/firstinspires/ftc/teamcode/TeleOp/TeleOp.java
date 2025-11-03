@@ -39,18 +39,18 @@ public class TeleOp extends LinearOpMode {
         while (!isStopRequested()) {
             drivetrain.joystickMovement(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.right_stick_y, gamepad1.right_bumper, false, gamepad1.left_bumper);
             if (gamepad1.a) {
-               actionRunner.addAction(robot.launcher.FireAtY(36,72));
+               robot.launcher.FireAtY(36,72);
 
             }
             if (gamepad1.b) {
-                actionRunner.addAction(robot.launcher.reset());
+                robot.launcher.reset();
             }
             if (gamepad1.y) {
-                actionRunner.addAction(robot.intake.runIntake());
+                robot.intake.runIntake();
                 intaking = true;
             }
-             if (gamepad1.x ) {
-                 actionRunner.addAction(robot.intake.reset());
+             if (gamepad1.x) {
+                 robot.intake.reset();
                 intaking = false;
 
             }
@@ -65,11 +65,8 @@ public class TeleOp extends LinearOpMode {
                 telemetry.addData("BLOCKS:", Arrays.toString(newblocks));
             }
             if (gamepad1.dpad_up) {
-                actionRunner.addAction(robot.launcher.setFiringState(Launcher.FiringState.FIRING));
+        robot.launcher.setFiringState(Launcher.FiringState.FIRING);
             }
-
-
-
             telemetry.update();
         }
     }

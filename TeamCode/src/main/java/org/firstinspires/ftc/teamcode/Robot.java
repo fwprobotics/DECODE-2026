@@ -40,7 +40,10 @@ public class Robot {
     public MecanumDrive drive;
 
 
-    public Pose2d startingPos;
+    public Pose2d startingPos = new Pose2d(12, 68, Math.toRadians(-90 ));
+
+
+    ;
     public Intake intake;
     public Launcher launcher;
 
@@ -48,10 +51,14 @@ public class Robot {
         this.intake = new Intake(hardwareMap, telemetry);
         this.launcher = new Launcher(hardwareMap, telemetry);
         this.autoPos = autoPos;
+        this.startingPos = new Pose2d(12*autoPos.xMult, 68* autoPos.yMult, Math.toRadians(-90* autoPos.yMult));
+
+        this.drive = new MecanumDrive(hardwareMap, startingPos);
 
     }
 
     public FieldTrajectoryPlanner createTrajectoryPlanner() {
+
         return new FieldTrajectoryPlanner(this);
     }
 }
