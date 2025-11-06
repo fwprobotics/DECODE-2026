@@ -43,22 +43,23 @@ public class Launcher extends  Subsystem{
         rightLaunchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         leftLaunchMotor.setDirection(DcMotor.Direction.REVERSE);
     }
-    public void FireAtY(float target_pos_y_in, float distance_in) {
+    public void FireAtY(double target_pos_y_in, double distance_in) {
         double velocity = distance_to_velocity(distance_in/12, Launch_angle, target_pos_y_in/12,  0);
         double motor_power = velocity_to_motor_power(velocity);
+        leftLaunchMotor.setPower(velocity);
+        rightLaunchMotor.setPower(velocity);
 
-            leftLaunchMotor.setPower(velocity);
-            rightLaunchMotor.setPower(velocity);
 
-            new SleepAction(2.75);
-            setFiringState(FiringState.FIRING);
-            new SleepAction(.75);
-            setFiringState(FiringState.LOADED);
-            new SleepAction(.25);
 //            leftLaunchMotor.setPower(0);
 //            rightLaunchMotor.setPower(0);
     }
-    public Action FireAtYAction(float target_pos_y_in, float distance_in) {
+    public void FireAtPower(float power) {
+        leftLaunchMotor.setPower(power);
+        rightLaunchMotor.setPower(power);
+//            leftLaunchMotor.setPower(0);
+//            rightLaunchMotor.setPower(0);
+    }
+    public Action FireAtYAction(double target_pos_y_in, double distance_in) {
         return telemetryPacket -> {
             this.FireAtY(target_pos_y_in, distance_in);
             return false;
@@ -89,10 +90,19 @@ public class Launcher extends  Subsystem{
         return Math.min(0.10857*velocity, 1);
     }
 
-    public Action setFiringState(FiringState state) {
+    public Action setFiringStateAction(FiringState state) {
         return TelemetryPacket -> {
-        stopperServo.setPosition(state.pos);
+            setFiringState(state);
         return false;};
+    }
+    public void setFiringState(FiringState state) {
+        stopperServo.setPosition(state.pos);
+    }
+    public void quickFire() {
+        stopperServo.setPosition(FiringState.FIRING.pos);
+        new SleepAction(.5);
+        stopperServo.setPosition(FiringState.LOADED.pos);
+
     }
 
 }

@@ -41,6 +41,7 @@ public class MeetOneAuto extends LinearOpMode {
         Action autoAction = robot.createTrajectoryPlanner()
                 .stepToShot()
                 .fireWholeMagazine()
+                .returnToPark()
                 .builder.build();
 
 //        Actions.runBlocking(robot.robotAction(Robot.RobotStates.DEFAULT));

@@ -34,39 +34,55 @@ public class TeleOp extends LinearOpMode {
 //        StereoCamera stereoCamera = new StereoCamera(leftcamera, rightcamera, hardwareMap, telemetry);
         Intake intake = new Intake(hardwareMap, telemetry);
         boolean intaking = false;
+        boolean launching = false;
+
         byte firing_pattern = 0;
         waitForStart();
         while (!isStopRequested()) {
-            drivetrain.joystickMovement(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.right_stick_y, gamepad1.right_bumper, false, gamepad1.left_bumper);
-            if (gamepad1.a) {
+            drivetrain.joystickMovement(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.right_stick_y, gamepad1.left_trigger >= .5, false, gamepad1.right_trigger >= .5);
+            robot.launcher.FireAtPower(gamepad2.left_trigger);
+            if (gamepad2.left_bumper) {
+                robot.launcher.setFiringState(Launcher.FiringState.FIRING);
+            }
+            if (gamepad2.right_bumper) {
+                robot.launcher.setFiringState(Launcher.FiringState.LOADED);
+            }
+            if (gamepad2.a ) {
                robot.launcher.FireAtY(36,72);
+               launching = true;
+            }
+            if (gamepad2.b) {
+                robot.launcher.FireAtY(36,36);
+                launching = false;
+            }
+            if (gamepad2.y) {
+                robot.launcher.FireAtY(36,120);
+                launching = false;
+            }
+            if (gamepad2.x) {
+                robot.launcher.quickFire();
+                launching = false;
+            }
 
-            }
-            if (gamepad1.b) {
-                robot.launcher.reset();
-            }
-            if (gamepad1.y) {
-                robot.intake.runIntake();
-                intaking = true;
-            }
-             if (gamepad1.x) {
-                 robot.intake.reset();
-                intaking = false;
-
-            }
-            if (gamepad1.dpad_down) {
-//                telemetry.addData("X DISTANCE", leftcamera.find_april_tag());
-                HuskyLens.Block[] blocks = rightcamera.webcam.blocks();
-                telemetry.addData("RIGHT BLOCKS LENGTH:", (blocks.length));
-                telemetry.addData("RIGHT BLOCKS :", (Arrays.toString(blocks)));
-
-                HuskyLens.Block[] newblocks = leftcamera.blocks();
-                telemetry.addData("LEFT BLOCKS LENGTH:", (newblocks.length));
-                telemetry.addData("BLOCKS:", Arrays.toString(newblocks));
-            }
             if (gamepad1.dpad_up) {
-        robot.launcher.setFiringState(Launcher.FiringState.FIRING);
+                robot.intake.runIntake();
             }
+             if (gamepad1.a) {
+                 robot.intake.reset();
+            }
+             if (gamepad1.dpad_down) {
+                 robot.intake.reverseIntake();
+             }
+//            if (gamepad1.dpad_down) {
+////                telemetry.addData("X DISTANCE", leftcamera.find_april_tag());
+//                HuskyLens.Block[] blocks = rightcamera.webcam.blocks();
+//                telemetry.addData("RIGHT BLOCKS LENGTH:", (blocks.length));
+//                telemetry.addData("RIGHT BLOCKS :", (Arrays.toString(blocks)));
+//
+//                HuskyLens.Block[] newblocks = leftcamera.blocks();
+//                telemetry.addData("LEFT BLOCKS LENGTH:", (newblocks.length));
+//                telemetry.addData("BLOCKS:", Arrays.toString(newblocks));
+//            }
             telemetry.update();
         }
     }

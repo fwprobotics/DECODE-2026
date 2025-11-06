@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 
 //package org.firstinspires.ftc.teamcode.Autonomous;
 //
@@ -38,7 +39,13 @@ public class FieldTrajectoryPlanner {
     };
     public FieldTrajectoryPlanner stepToShot() {
         builder = builder
-                .strafeToLinearHeading(new Vector2d(18, 18), Math.toRadians(-45*robot.autoPos.yMult));
+                .strafeToLinearHeading(new Vector2d(18, -18), Math.toRadians(45*robot.autoPos.yMult));
+        return this;
+    };
+
+    public FieldTrajectoryPlanner returnToPark() {
+        builder = builder
+                .strafeToLinearHeading(new Vector2d(18, 42), Math.toRadians(-90*robot.autoPos.yMult));
         return this;
     };
 
@@ -48,18 +55,34 @@ public class FieldTrajectoryPlanner {
                         new SequentialAction(
                                 new SleepAction(.1),
                                 robot.launcher.FireAtYAction(32,72),
+                                new SleepAction(1),
+        robot.launcher.setFiringStateAction(Launcher.FiringState.FIRING),
+        new SleepAction(.4),
+        robot.launcher.setFiringStateAction(Launcher.FiringState.LOADED),
+        new SleepAction(.4),
                                 new SleepAction(1.5),
                                 robot.intake.runIntakeAction(),
                                 new SleepAction(.5),
                                 robot.intake.resetAction(),
-                                robot.launcher.FireAtYAction(32, 72),
+//                                robot.launcher.FireAtYAction(32, 72),
+                                        robot.launcher.setFiringStateAction(Launcher.FiringState.FIRING),
+        new SleepAction(.4),
+        robot.launcher.setFiringStateAction(Launcher.FiringState.LOADED),
+        new SleepAction(.4),
                                 robot.intake.runIntakeAction(),
                                 new SleepAction(.5),
                                 robot.intake.resetAction(),
-                                robot.launcher.FireAtYAction(32, 72),
-        new SleepAction(1.5)
+                                robot.launcher.FireAtYAction(32, 72-18*Math.sqrt(2)),
+                                robot.launcher.setFiringStateAction(Launcher.FiringState.FIRING),
+                                new SleepAction(.4),
+                                robot.launcher.setFiringStateAction(Launcher.FiringState.LOADED),
+                                new SleepAction(.4),
+        robot.launcher.reset(),
+        new SleepAction(1.5),
+                                robot.launcher.setFiringStateAction(Launcher.FiringState.LOADED)
 
-                        ));
+
+                                ));
         return this;
     };
 

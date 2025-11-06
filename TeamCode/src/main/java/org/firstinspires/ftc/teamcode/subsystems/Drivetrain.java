@@ -106,17 +106,18 @@ public class Drivetrain {
                 LeftX = 0;
             } else if (LeftX > 0.10 && LeftY < 0.10) {
                 LeftY = 0;
-            }//     if (slowModeControl) {
-            frontLeftVal = ((LeftY - RightX) - LeftX);
-            frontRightVal = ((LeftY + RightX) + LeftX);
-            backLeftVal = ((LeftY - RightX) + LeftX);
-            backRightVal = ((LeftY + RightX) - LeftX);
+            }
+//            if (slowModeControl >= .5) {
+//            frontLeftVal = ((LeftY - RightX) - LeftX);
+//            frontRightVal = ((LeftY + RightX) + LeftX);
+//            backLeftVal = ((LeftY - RightX) + LeftX);
+//            backRightVal = ((LeftY + RightX) - LeftX);
 //            } else {
-//                frontLeftVal = cubeInput(((LeftY - RightX) - LeftX), TeleOpDTConstants.speedFactor);
-//                frontRightVal = cubeInput(((LeftY + RightX) + LeftX), TeleOpDTConstants.speedFactor);
-//                backLeftVal = cubeInput(((LeftY - RightX) + LeftX), TeleOpDTConstants.speedFactor);
-//                backRightVal = cubeInput(((LeftY + RightX) - LeftX), TeleOpDTConstants.speedFactor);
-//
+                frontLeftVal = cubeInput(((LeftY - RightX) - LeftX), TeleOpDTConstants.speedFactor);
+                frontRightVal = cubeInput(((LeftY + RightX) + LeftX), TeleOpDTConstants.speedFactor);
+                backLeftVal = cubeInput(((LeftY - RightX) + LeftX), TeleOpDTConstants.speedFactor);
+                backRightVal = cubeInput(((LeftY + RightX) - LeftX), TeleOpDTConstants.speedFactor);
+
 
 
         frontLeftDrive.setPower(frontLeftVal * slowModeMult * boostModeMult * TeleOpDTConstants.power_modifier);
@@ -137,12 +138,12 @@ public class Drivetrain {
         realTelemetry.addData("Slow Mode Multiplier", slowModeMult);
 
 
-    }
+    };
 
     double cubeInput (double input, double factor) {
         double cubedComponent = factor * Math.pow(input,3 );
         double linearComponent = input * (1 - factor);
         return cubedComponent + linearComponent;
-    }
+    };
 
-}
+};

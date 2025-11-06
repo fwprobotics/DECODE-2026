@@ -18,7 +18,10 @@ public class Intake extends Subsystem {
     }
 
     public void runIntake()  {
-        intakeMotor.setPower(1);
+        intakeMotor.setPower(.8);
+    }
+    public void reverseIntake()  {
+        intakeMotor.setPower(-.8);
     }
     public Action runIntakeAction () {
             return TelemetryPacket -> {
