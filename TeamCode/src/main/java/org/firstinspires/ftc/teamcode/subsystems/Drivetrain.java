@@ -20,17 +20,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 // Want to toggle between this and normal driving
 
 public class Drivetrain {
-
     private DcMotor frontLeftDrive, frontRightDrive, backLeftDrive, backRightDrive;
-
     public LinearOpMode OpMode;
     public Telemetry realTelemetry;
     public IMU imu;
-
     private boolean inputButtonPressed;
-//    public ToggleButton fieldRelativeDrive;
-
-
     private static final MotorConfigurationType MOTOR_CONFIG =
             MotorConfigurationType.getMotorType(RevRobotics20HdHexMotor.class);
 
@@ -44,15 +38,11 @@ public class Drivetrain {
         public static double power_modifier = 0.6;
         public static double lift_up_modifier = 0.2;
 
-    }
-
-
+    };
     public Drivetrain(LinearOpMode Input, HardwareMap hardwareMap, Telemetry telemetry){
-
         OpMode = Input;
         realTelemetry = telemetry;
         realTelemetry.setAutoClear(true);
-//        fieldRelativeDrive = new ToggleButton(false);
 
         backLeftDrive = hardwareMap.dcMotor.get("backLeftDrive");
         backRightDrive = hardwareMap.dcMotor.get("backRightDrive");
@@ -63,8 +53,6 @@ public class Drivetrain {
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
                 RevHubOrientationOnRobot.UsbFacingDirection.UP));
-
-
         imu.initialize(parameters);
 
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -74,22 +62,11 @@ public class Drivetrain {
         frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-
-        //  OpMode.idle();
     }
-
     public static double clamp(double val, double min, double max) {
         return Math.max(min, Math.min(max, val));
     }
-
-    //This is the teleop drive formulas
     public void joystickMovement(double leftStickY, double leftStickX, double rightStickX, double rightstickY, boolean slowModeControl, boolean fieldRelativeToggle, boolean boostButton){
-
-//        double RightStickAngle;
-
-        //toggles between field relative drive(aka forward is your forward(default) vs forward is robot forward)
-//        fieldRelativeDrive.toggle(fieldRelativeToggle);
         double frontRightVal;
         double frontLeftVal;
         double backLeftVal;
@@ -98,52 +75,34 @@ public class Drivetrain {
         double slowModeMult = slowModeControl ? 0.4 : 1;
         double boostModeMult = boostButton ? 1.5 : 1;
 
-            double LeftY = cubeInput(-leftStickY, TeleOpDTConstants.speedFactor);
-            double LeftX = cubeInput(-leftStickX, TeleOpDTConstants.speedFactor);
-            double RightX = cubeInput(-rightStickX, TeleOpDTConstants.speedFactor);
+        double LeftY = cubeInput(-leftStickY, TeleOpDTConstants.speedFactor);
+        double LeftX = cubeInput(-leftStickX, TeleOpDTConstants.speedFactor);
+        double RightX = cubeInput(-rightStickX, TeleOpDTConstants.speedFactor);
 
-            if (LeftY > 0.10 && LeftX <0.10) {
-                LeftX = 0;
-            } else if (LeftX > 0.10 && LeftY < 0.10) {
-                LeftY = 0;
-            }
-//            if (slowModeControl >= .5) {
-//            frontLeftVal = ((LeftY - RightX) - LeftX);
-//            frontRightVal = ((LeftY + RightX) + LeftX);
-//            backLeftVal = ((LeftY - RightX) + LeftX);
-//            backRightVal = ((LeftY + RightX) - LeftX);
-//            } else {
-                frontLeftVal = cubeInput(((LeftY - RightX) - LeftX), TeleOpDTConstants.speedFactor);
-                frontRightVal = cubeInput(((LeftY + RightX) + LeftX), TeleOpDTConstants.speedFactor);
-                backLeftVal = cubeInput(((LeftY - RightX) + LeftX), TeleOpDTConstants.speedFactor);
-                backRightVal = cubeInput(((LeftY + RightX) - LeftX), TeleOpDTConstants.speedFactor);
-
-
+        if (LeftY > 0.10 && LeftX <0.10) {
+            LeftX = 0;
+        } else if (LeftX > 0.10 && LeftY < 0.10) {
+            LeftY = 0;
+        }
+        frontLeftVal = cubeInput(((LeftY - RightX) - LeftX), TeleOpDTConstants.speedFactor);
+        frontRightVal = cubeInput(((LeftY + RightX) + LeftX), TeleOpDTConstants.speedFactor);
+        backLeftVal = cubeInput(((LeftY - RightX) + LeftX), TeleOpDTConstants.speedFactor);
+        backRightVal = cubeInput(((LeftY + RightX) - LeftX), TeleOpDTConstants.speedFactor);
 
         frontLeftDrive.setPower(frontLeftVal * slowModeMult * boostModeMult * TeleOpDTConstants.power_modifier);
         frontRightDrive.setPower(frontRightVal * slowModeMult * boostModeMult* TeleOpDTConstants.power_modifier);
         backLeftDrive.setPower(backLeftVal * slowModeMult * boostModeMult * TeleOpDTConstants.power_modifier);
         backRightDrive.setPower(backRightVal * slowModeMult  * boostModeMult  * TeleOpDTConstants.power_modifier);
 
-//        frontLeftDrive.setPower(.2);
-//        frontRightDrive.setPower(-.2);
-//        backLeftDrive.setPower( .2);
-//        backRightDrive.setPower( -.2);
-
         realTelemetry.addData("Front Left", frontLeftDrive.getCurrentPosition());
         realTelemetry.addData("Back Left", backLeftDrive.getCurrentPosition());
         realTelemetry.addData("Front Right", frontRightDrive.getCurrentPosition());
         realTelemetry.addData("Back Right", backRightDrive.getCurrentPosition());
-//        realTelemetry.addData("Toggle Field Relative", fieldRelativeDrive.state());
         realTelemetry.addData("Slow Mode Multiplier", slowModeMult);
-
-
     };
-
     double cubeInput (double input, double factor) {
         double cubedComponent = factor * Math.pow(input,3 );
         double linearComponent = input * (1 - factor);
         return cubedComponent + linearComponent;
     };
-
 };

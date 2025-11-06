@@ -10,20 +10,17 @@ public class StereoCamera extends Subsystem {
     double camera_distance;
     Camera left_camera;
     Camera right_camera;
-
     public StereoCamera( Camera left_camera, Camera right_camera, HardwareMap hardwareMap, Telemetry telemetry) {
         super(hardwareMap, telemetry);
         this.left_camera = left_camera;
         this.right_camera = right_camera;
     }
-
     public static class StereoConfig {
         public static double x_distance = 1;
         public static double y_distance = 1;
         public static double z_distance = 1;
 
     }
-
     public double compute_x_distance( )
     {
         HuskyLens.Block right_camera_april_tag = this.right_camera.find_april_tag();

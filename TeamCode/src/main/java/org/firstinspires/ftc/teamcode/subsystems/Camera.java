@@ -25,14 +25,9 @@ public class Camera extends Subsystem {
         super(hardwareMap, telemetry);
         webcam = hardwareMap.get(HuskyLens.class, Cameramap);
         webcam.selectAlgorithm(HuskyLens.Algorithm.TAG_RECOGNITION);
-
         initCV(Cameramap);
     }
-
-
-    public void initCV(String cameramap) {
-
-    }
+    public void initCV(String cameramap) {}
     public HuskyLens.Block find_april_tag() {
         HuskyLens.Block[] blocks = webcam.blocks();
         telemetry.addData("BLOCKS:", Arrays.toString(blocks));
@@ -40,15 +35,12 @@ public class Camera extends Subsystem {
             return null;
         }
         HuskyLens.Block returnTag = blocks[0];
-
         for (HuskyLens.Block block : blocks) {
             telemetry.addData("various blocks:", block.toString());
             if (block.width > returnTag.width) {
                 returnTag = block;
             }
         }
-        // Process block data (e.g., get x-center, y-center, width, height, ID)
-
         return returnTag;
     }
 }

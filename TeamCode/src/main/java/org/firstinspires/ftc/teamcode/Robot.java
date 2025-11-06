@@ -26,39 +26,27 @@ public class Robot {
         REDWALL (-1, -1),
         BLUEBASKET (-1, 1),
         BLUEWALL (1, 1);
-
         public int xMult;
         public int yMult;
-
         AutoPos(int xMult, int yMult) {
             this.xMult = xMult;
             this.yMult = yMult;
         }
     }
-
     public AutoPos autoPos;
     public MecanumDrive drive;
-
-
     public Pose2d startingPos = new Pose2d(12, 68, Math.toRadians(-90 ));
-
-
-    ;
     public Intake intake;
     public Launcher launcher;
-
     public Robot(HardwareMap hardwareMap, Telemetry telemetry, AutoPos autoPos, boolean teleop) {
         this.intake = new Intake(hardwareMap, telemetry);
         this.launcher = new Launcher(hardwareMap, telemetry);
         this.autoPos = autoPos;
         this.startingPos = new Pose2d(12*autoPos.xMult, 68* autoPos.yMult, Math.toRadians(-90* autoPos.yMult));
-
         this.drive = new MecanumDrive(hardwareMap, startingPos);
 
     }
-
     public FieldTrajectoryPlanner createTrajectoryPlanner() {
-
         return new FieldTrajectoryPlanner(this);
     }
 }

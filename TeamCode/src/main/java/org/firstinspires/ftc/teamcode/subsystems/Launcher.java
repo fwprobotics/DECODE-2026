@@ -14,12 +14,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import java.util.Vector;
 
-public class Launcher extends  Subsystem{
+public class Launcher extends  Subsystem {
     public enum FiringState {
         LOADED(0.0),
-        FIRING(1.0);
-
-        public double pos;
+        FIRING(.75);
+        public final double pos;
         FiringState(double pos) {
             this.pos = pos;
         }
@@ -48,16 +47,10 @@ public class Launcher extends  Subsystem{
         double motor_power = velocity_to_motor_power(velocity);
         leftLaunchMotor.setPower(velocity);
         rightLaunchMotor.setPower(velocity);
-
-
-//            leftLaunchMotor.setPower(0);
-//            rightLaunchMotor.setPower(0);
     }
     public void FireAtPower(float power) {
         leftLaunchMotor.setPower(power);
         rightLaunchMotor.setPower(power);
-//            leftLaunchMotor.setPower(0);
-//            rightLaunchMotor.setPower(0);
     }
     public Action FireAtYAction(double target_pos_y_in, double distance_in) {
         return telemetryPacket -> {
@@ -78,7 +71,6 @@ public class Launcher extends  Subsystem{
         Mag_V = numerator / denominator;
         return Mag_V;
     };
-
     public Action reset() {
         return TelemetryPacket -> {
             rightLaunchMotor.setPower((0));
@@ -89,7 +81,6 @@ public class Launcher extends  Subsystem{
     double velocity_to_motor_power (double velocity) {
         return Math.min(0.10857*velocity, 1);
     }
-
     public Action setFiringStateAction(FiringState state) {
         return TelemetryPacket -> {
             setFiringState(state);
@@ -104,5 +95,11 @@ public class Launcher extends  Subsystem{
         stopperServo.setPosition(FiringState.LOADED.pos);
 
     }
+    public Action quickFireAction() {
+        return TelemetryPacket ->{
+            this.quickFire();
+            return false;
+        };
+    };
 
 }
