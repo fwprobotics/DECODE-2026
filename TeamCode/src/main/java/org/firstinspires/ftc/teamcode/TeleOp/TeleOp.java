@@ -40,13 +40,13 @@ public class TeleOp extends LinearOpMode {
                 robot.launcher.setFiringState(Launcher.FiringState.LOADED);
             }
             if (gamepad2.a ) {
-               robot.launcher.FireAtY(36,72);
+               robot.launcher.FireAtY(.65);
             }
             if (gamepad2.b) {
-                robot.launcher.FireAtY(36,36);
+                robot.launcher.FireAtY(.5);
             }
             if (gamepad2.y) {
-                robot.launcher.FireAtY(36,120);
+                robot.launcher.FireAtY(1);
             }
             if (gamepad2.x) {
                 robot.launcher.quickFire();

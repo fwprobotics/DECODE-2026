@@ -16,8 +16,8 @@ import java.util.Vector;
 
 public class Launcher extends  Subsystem {
     public enum FiringState {
-        LOADED(0.0),
-        FIRING(.75);
+        LOADED(1),
+        FIRING(.25);
         public final double pos;
         FiringState(double pos) {
             this.pos = pos;
@@ -42,9 +42,9 @@ public class Launcher extends  Subsystem {
         rightLaunchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         leftLaunchMotor.setDirection(DcMotor.Direction.REVERSE);
     }
-    public void FireAtY(double target_pos_y_in, double distance_in) {
-        double velocity = distance_to_velocity(distance_in/12, Launch_angle, target_pos_y_in/12,  0);
-        double motor_power = velocity_to_motor_power(velocity);
+    public void FireAtY(double velocity) {
+//        double velocity = distance_to_velocity(distance_in/12, Launch_angle, target_pos_y_in/12,  0);
+//        double motor_power = velocity_to_motor_power(velocity);
         leftLaunchMotor.setPower(velocity);
         rightLaunchMotor.setPower(velocity);
     }
@@ -54,7 +54,7 @@ public class Launcher extends  Subsystem {
     }
     public Action FireAtYAction(double target_pos_y_in, double distance_in) {
         return telemetryPacket -> {
-            this.FireAtY(target_pos_y_in, distance_in);
+            this.FireAtY(target_pos_y_in);
             return false;
         };
     }

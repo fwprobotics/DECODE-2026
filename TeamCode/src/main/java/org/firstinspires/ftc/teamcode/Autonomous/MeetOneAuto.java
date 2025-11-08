@@ -23,7 +23,7 @@ public class MeetOneAuto extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Robot.AutoPos autoPos = Robot.AutoPos.BLUEWALL;
-        while (!gamepad1.a) {
+        while (!gamepad1.dpad_left) {
             if (gamepad1.dpad_down) {
                 autoPos = Robot.AutoPos.REDWALL;
             } else if (gamepad1.dpad_up) {
@@ -32,8 +32,10 @@ public class MeetOneAuto extends LinearOpMode {
             telemetry.addData("starting pos", autoPos);
             telemetry.update();
         }
+        telemetry.addData("ready for ", autoPos);
+        telemetry.update();
         Robot robot = new Robot(hardwareMap, telemetry, autoPos, false);
-
+        Actions.runBlocking(robot.launcher.setFiringStateAction(Launcher.FiringState.LOADED));
         Action autoAction = robot.createTrajectoryPlanner()
                 .stepToShot()
                 .fireWholeMagazine()

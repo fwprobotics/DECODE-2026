@@ -28,9 +28,9 @@ public class Intake extends Subsystem {
     };
     public Action newballAction () {
         return TelemetryPacket -> {
-            this.runIntake();
+            this.runIntakeAction();
             new SleepAction(.5);
-            this.reset();
+            this.resetAction();
             return false;
         };
     };

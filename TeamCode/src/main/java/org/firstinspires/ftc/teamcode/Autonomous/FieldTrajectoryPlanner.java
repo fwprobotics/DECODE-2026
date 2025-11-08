@@ -39,7 +39,7 @@ public class FieldTrajectoryPlanner {
     };
     public FieldTrajectoryPlanner stepToShot() {
         builder = builder
-                .strafeToLinearHeading(new Vector2d(18*robot.autoPos.xMult, -18*robot.autoPos.yMult), Math.toRadians(45*robot.autoPos.yMult));
+                .strafeToLinearHeading(new Vector2d(6*robot.autoPos.xMult, -6*robot.autoPos.yMult), Math.toRadians(45*robot.autoPos.yMult));
         return this;
     };
 
@@ -53,16 +53,18 @@ public class FieldTrajectoryPlanner {
         builder = builder.afterTime(.1, new SequentialAction())
                 .stopAndAdd(
                         new SequentialAction(
-                                robot.launcher.FireAtYAction(32, 72-18*Math.sqrt(2)),
-                                new SleepAction(1),
-                                robot.launcher.quickFireAction(),
-                                new SleepAction(.4),
-                                robot.intake.newballAction(),
-                                robot.launcher.quickFireAction(),
-                                new SleepAction(.4),
-                                robot.intake.newballAction(),
-                                robot.launcher.quickFireAction(),
-                                new SleepAction(.4),
+                                robot.launcher.FireAtYAction(.9, 0),
+                                new SleepAction(2),
+                                robot.launcher.setFiringStateAction(Launcher.FiringState.FIRING),
+                                new SleepAction(.2),
+                                robot.intake.runIntakeAction(),
+                                new SleepAction(.75),
+                                robot.intake.resetAction(),
+                                new SleepAction(.75),
+                                robot.intake.runIntakeAction(),
+                                new SleepAction(.75),
+                                robot.intake.resetAction(),
+                                new SleepAction(.75),
                                 robot.launcher.reset(),
                                 robot.launcher.setFiringStateAction(Launcher.FiringState.LOADED)
                         ));

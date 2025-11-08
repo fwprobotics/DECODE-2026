@@ -23,9 +23,9 @@ import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 public class Robot {
     public enum AutoPos {
         REDBASKET (1, -1),
-        REDWALL (-1, -1),
-        BLUEBASKET (-1, 1),
-        BLUEWALL (1, 1);
+        REDWALL (1, -1),
+        BLUEBASKET ( -1, 1),
+        BLUEWALL (-1, 1);
         public int xMult;
         public int yMult;
         AutoPos(int xMult, int yMult) {
