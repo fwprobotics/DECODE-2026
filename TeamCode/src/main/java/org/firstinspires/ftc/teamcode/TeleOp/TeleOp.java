@@ -40,13 +40,13 @@ public class TeleOp extends LinearOpMode {
                 robot.launcher.setFiringState(Launcher.FiringState.LOADED);
             }
             if (gamepad2.a ) {
-               robot.launcher.FireAtY(.65);
+               robot.launcher.FireAtY(36,72);
             }
             if (gamepad2.b) {
-                robot.launcher.FireAtY(.5);
+                robot.launcher.FireAtY(36,72-18);
             }
             if (gamepad2.y) {
-                robot.launcher.FireAtY(1);
+                robot.launcher.FireAtY(36,72-36);
             }
             if (gamepad2.x) {
                 robot.launcher.quickFire();
@@ -70,6 +70,10 @@ public class TeleOp extends LinearOpMode {
                  telemetry.addData("Estimated distance Right",Camera.GetDistanceFromArea(robot.leftCamera.getAreaOfAprilTag()));
                  telemetry.addData("Estimated distance Left",Camera.GetDistanceFromArea(robot.rightCamera.getAreaOfAprilTag()));
 
+             }
+             if (gamepad1.dpad_right) {
+                robot.leftCamera.find_april_tag();
+                robot.rightCamera.find_april_tag();
              }
             telemetry.update();
         }

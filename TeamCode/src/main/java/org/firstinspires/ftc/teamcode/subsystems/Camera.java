@@ -32,6 +32,7 @@ public class Camera extends Subsystem {
         HuskyLens.Block[] blocks = webcam.blocks();
         telemetry.addData("BLOCKS:", Arrays.toString(blocks));
         if (blocks.length == 0) {
+            telemetry.addData("FAILED TO FIND", blocks.length);
             return null;
         }
         HuskyLens.Block returnTag = blocks[0];
