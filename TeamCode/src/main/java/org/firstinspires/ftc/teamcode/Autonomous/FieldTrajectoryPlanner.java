@@ -53,7 +53,7 @@ public class FieldTrajectoryPlanner {
         builder = builder.afterTime(.1, new SequentialAction())
                 .stopAndAdd(
                         new SequentialAction(
-                                robot.launcher.FireAtYAction(.9, 0),
+                                robot.launcher.FireAtYAction(.8, 0),
                                 new SleepAction(2),
                                 robot.launcher.setFiringStateAction(Launcher.FiringState.FIRING),
                                 new SleepAction(.2),

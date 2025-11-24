@@ -43,6 +43,16 @@ public class Camera extends Subsystem {
         }
         return returnTag;
     }
+    public double getAreaOfAprilTag() {
+        HuskyLens.Block aprilTag = find_april_tag();
+        if (aprilTag == null) {
+            return 0;
+        }
+        return aprilTag.width * aprilTag.height;
+    }
+    public static double GetDistanceFromArea(double Area) {
+        return Math.sqrt(2700.43138/(Area - 14.09491));
+    }
 }
 
 

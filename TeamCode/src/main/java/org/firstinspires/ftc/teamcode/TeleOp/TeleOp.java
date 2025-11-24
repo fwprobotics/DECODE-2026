@@ -60,6 +60,17 @@ public class TeleOp extends LinearOpMode {
              if (gamepad1.dpad_down) {
                  robot.intake.reverseIntake();
              }
+             if (gamepad1.dpad_right) {
+                 robot.leftCamera.find_april_tag();
+                 robot.rightCamera.find_april_tag();
+             }
+             if (gamepad1.dpad_left) {
+                 telemetry.addData("X LeftDistance",robot.leftCamera.getAreaOfAprilTag());
+                 telemetry.addData("X RightDistance",robot.rightCamera.getAreaOfAprilTag());
+                 telemetry.addData("Estimated distance Right",Camera.GetDistanceFromArea(robot.leftCamera.getAreaOfAprilTag()));
+                 telemetry.addData("Estimated distance Left",Camera.GetDistanceFromArea(robot.rightCamera.getAreaOfAprilTag()));
+
+             }
             telemetry.update();
         }
     }

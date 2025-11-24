@@ -25,6 +25,8 @@ public class StereoCamera extends Subsystem {
     {
         HuskyLens.Block right_camera_april_tag = this.right_camera.find_april_tag();
         HuskyLens.Block left_camera_april_tag = this.left_camera.find_april_tag();
+        if (right_camera_april_tag == null || left_camera_april_tag == null) return -1;
+
         double x_distance = 0;
         double numerator = this.camera_distance * this.right_camera.view_angle;
         double denominator = 2 * Math.tan(this.right_camera.view_angle/2) * (left_camera_april_tag.x - right_camera_april_tag.x);
