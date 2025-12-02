@@ -24,9 +24,12 @@ public class Launcher extends  Subsystem {
         }
     }
     double Launch_angle =  Math.toRadians(45);
+    double g = -9.8;
     Telemetry telemetry;
     Servo stopperServo;
     double wheel_radius_meters = .036;
+    double y_0 = .2;
+    double Launch_Angle;
     DcMotor leftLaunchMotor , rightLaunchMotor ;
     public Launcher(HardwareMap hardwareMap, Telemetry telemetry) {
         super(hardwareMap, telemetry);
@@ -43,7 +46,7 @@ public class Launcher extends  Subsystem {
         leftLaunchMotor.setDirection(DcMotor.Direction.REVERSE);
     }
     public void FireAtY(double target_pos_y_in, double distance_in) {
-        double velocity = distance_to_velocity(distance_in/12, Launch_angle, target_pos_y_in/12,  0);
+        double velocity = distance_to_velocity(distance_in/12, target_pos_y_in/12,  .5);
         double motor_power = velocity_to_motor_power(velocity);
         leftLaunchMotor.setPower(motor_power);
         rightLaunchMotor.setPower(motor_power);
@@ -58,17 +61,14 @@ public class Launcher extends  Subsystem {
             return false;
         };
     }
-     double distance_to_velocity (double x_pos_feet, double theta, double target_pos_feet, double tolerance){
-        double target_pos = 0.3048*target_pos_feet ;
-        double x_pos = 0.3048*x_pos_feet ;
-        double Mag_V = 0;
-        double numerator = (7 * x_pos)/Math.cos(theta);
-        double denominator = Math.sqrt(10) * Math.sqrt(x_pos*Math.tan(theta)-target_pos-tolerance);
-        if (denominator == 0) {
-            telemetry.addLine("Division By Zero Error -- Target too far or too close");
+     double distance_to_velocity (double x_pos_feet, double target_pos_feet, double tolerance){
+        double c = y_0 + (target_pos_feet+tolerance)*0.3048 - Math.tan(Launch_Angle)*(x_pos_feet*0.3048);
+        double v_squared = (this.g * c * Math.pow(x_pos_feet*0.3048, 2)) / (2*Math.pow(Math.cos(Launch_Angle),2));
+        if (v_squared <= 0) {
             return 0;
         }
-        Mag_V = numerator / denominator;
+        double Mag_V = Math.sqrt(v_squared);
+
         return Mag_V;
     };
     public Action reset() {
@@ -79,7 +79,7 @@ public class Launcher extends  Subsystem {
         };
     };
     double velocity_to_motor_power (double velocity) {
-        return Math.min(0.10857*velocity, 1);
+        return 0.0012922*Math.pow(velocity,2)-0.198256*velocity+8.10605;
     }
     public Action setFiringStateAction(FiringState state) {
         return TelemetryPacket -> {

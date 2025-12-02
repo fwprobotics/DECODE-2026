@@ -14,6 +14,7 @@ public class StereoCamera extends Subsystem {
         super(hardwareMap, telemetry);
         this.left_camera = left_camera;
         this.right_camera = right_camera;
+        double camera_distance = .17;
     }
     public static class StereoConfig {
         public static double x_distance = 1;

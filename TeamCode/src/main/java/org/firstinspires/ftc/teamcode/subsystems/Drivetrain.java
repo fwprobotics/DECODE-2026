@@ -51,8 +51,8 @@ public class Drivetrain {
         imu = hardwareMap.get(IMU.class, "imu");
 
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
-                RevHubOrientationOnRobot.UsbFacingDirection.UP));
+                RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                RevHubOrientationOnRobot.UsbFacingDirection.RIGHT));
         imu.initialize(parameters);
 
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -66,7 +66,7 @@ public class Drivetrain {
     public static double clamp(double val, double min, double max) {
         return Math.max(min, Math.min(max, val));
     }
-    public void joystickMovement(double leftStickY, double leftStickX, double rightStickX, double rightstickY, boolean slowModeControl, boolean fieldRelativeToggle, boolean boostButton){
+    public void joystickMovement(double leftStickY, double leftStickX, double rightStickX, double rightstickY, boolean slowModeControl, boolean fieldRelativeToggle, boolean boostButton) {
         double frontRightVal;
         double frontLeftVal;
         double backLeftVal;
@@ -74,12 +74,42 @@ public class Drivetrain {
 
         double slowModeMult = slowModeControl ? 0.4 : 1;
         double boostModeMult = boostButton ? 1.5 : 1;
+        if (fieldRelativeToggle) {
+            double LeftStickAngle;
+
+            if (leftStickX == 0 && leftStickY == 0) {
+                LeftStickAngle = 0;
+            } else {
+                LeftStickAngle = Math.atan2(leftStickY, -leftStickX) -Math.PI/2;
+            }
+            double RobotAngle = imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle + Math.PI/2+Math.PI/4;
+            double NewLeftAngle = LeftStickAngle - RobotAngle;
+            double magnitude = Math.sqrt(Math.pow(leftStickY, 2.0) + Math.pow(leftStickX, 2.0));
+            double LeftX = Math.cos(NewLeftAngle) * magnitude;
+            double LeftY = Math.sin(NewLeftAngle) * magnitude;
+            double RightX = rightStickX;
+            frontLeftVal = -((-RightX) + LeftX);
+            frontRightVal = -((LeftY + RightX));
+            backLeftVal = -(((LeftY - RightX)));
+            backRightVal = -(((RightX) + LeftX));
+
+            realTelemetry.addData("left stick angle", LeftStickAngle);
+            realTelemetry.addData("imu angle 1", imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle);
+            realTelemetry.addData("imu angle 2", imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle);
+            realTelemetry.addData("imu angle 3", imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle);
+            realTelemetry.addData("FLV", frontLeftVal);
+            realTelemetry.addData("LeftX", LeftX);
+            realTelemetry.addData("RightX", RightX);
+            realTelemetry.addData("LeftY", LeftY);
+            realTelemetry.addData("Robot Angle", RobotAngle);}
+    else {
+
 
         double LeftY = cubeInput(-leftStickY, TeleOpDTConstants.speedFactor);
         double LeftX = cubeInput(-leftStickX, TeleOpDTConstants.speedFactor);
         double RightX = cubeInput(-rightStickX, TeleOpDTConstants.speedFactor);
 
-        if (LeftY > 0.10 && LeftX <0.10) {
+        if (LeftY > 0.10 && LeftX < 0.10) {
             LeftX = 0;
         } else if (LeftX > 0.10 && LeftY < 0.10) {
             LeftY = 0;
@@ -88,6 +118,9 @@ public class Drivetrain {
         frontRightVal = cubeInput(((LeftY + RightX) + LeftX), TeleOpDTConstants.speedFactor);
         backLeftVal = cubeInput(((LeftY - RightX) + LeftX), TeleOpDTConstants.speedFactor);
         backRightVal = cubeInput(((LeftY + RightX) - LeftX), TeleOpDTConstants.speedFactor);
+
+
+    }
 
         frontLeftDrive.setPower(frontLeftVal * slowModeMult * boostModeMult * TeleOpDTConstants.power_modifier);
         frontRightDrive.setPower(frontRightVal * slowModeMult * boostModeMult* TeleOpDTConstants.power_modifier);

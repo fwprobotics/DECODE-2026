@@ -23,6 +23,7 @@ public class Camera extends Subsystem {
     public HuskyLens webcam;
     public Camera(String Cameramap, HardwareMap hardwareMap, Telemetry telemetry) {
         super(hardwareMap, telemetry);
+        this.view_angle = Math.PI/3;
         webcam = hardwareMap.get(HuskyLens.class, Cameramap);
         webcam.selectAlgorithm(HuskyLens.Algorithm.TAG_RECOGNITION);
         initCV(Cameramap);

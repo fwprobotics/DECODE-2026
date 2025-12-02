@@ -29,6 +29,11 @@ public class MeetOneAuto extends LinearOpMode {
             } else if (gamepad1.dpad_up) {
                 autoPos = Robot.AutoPos.BLUEWALL;
             }
+            if (gamepad1.dpad_left) {
+                autoPos = Robot.AutoPos.REDBASKET;
+            } else if (gamepad1.right) {
+                autoPos = Robot.AutoPos.BLUEBASKET;
+            }
             telemetry.addData("starting pos", autoPos);
             telemetry.update();
         }
@@ -39,7 +44,7 @@ public class MeetOneAuto extends LinearOpMode {
         Action autoAction = robot.createTrajectoryPlanner()
                 .stepToShot()
                 .fireWholeMagazine()
-                .returnToPark()
+                .lineWithBackWall()
                 .builder.build();
 
         waitForStart();

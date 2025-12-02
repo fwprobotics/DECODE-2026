@@ -31,7 +31,7 @@ public class TeleOp extends LinearOpMode {
         byte firing_pattern = 0;
         waitForStart();
         while (!isStopRequested()) {
-            drivetrain.joystickMovement(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.right_stick_y, gamepad1.left_trigger >= .5, false, gamepad1.right_trigger >= .5);
+            drivetrain.joystickMovement(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.right_stick_y, gamepad1.left_trigger >= .5, true, gamepad1.right_trigger >= .5);
             robot.launcher.FireAtPower(gamepad2.left_trigger);
             if (gamepad2.left_bumper) {
                 robot.launcher.setFiringState(Launcher.FiringState.FIRING);
@@ -40,16 +40,16 @@ public class TeleOp extends LinearOpMode {
                 robot.launcher.setFiringState(Launcher.FiringState.LOADED);
             }
             if (gamepad2.a ) {
-               robot.launcher.FireAtY(36,72);
+               robot.launcher.FireAtPower(.5F);
             }
             if (gamepad2.b) {
-                robot.launcher.FireAtY(36,72-18);
+                robot.launcher.FireAtPower(.6F);
             }
             if (gamepad2.y) {
-                robot.launcher.FireAtY(36,72-36);
+                robot.launcher.FireAtPower(.7F);
             }
             if (gamepad2.x) {
-                robot.launcher.quickFire();
+                robot.launcher.FireAtPower(.8F);
             }
             if (gamepad1.dpad_up) {
                 robot.intake.runIntake();
@@ -60,16 +60,13 @@ public class TeleOp extends LinearOpMode {
              if (gamepad1.dpad_down) {
                  robot.intake.reverseIntake();
              }
-             if (gamepad1.dpad_right) {
-                 robot.leftCamera.find_april_tag();
-                 robot.rightCamera.find_april_tag();
-             }
+
              if (gamepad1.dpad_left) {
                  telemetry.addData("X LeftDistance",robot.leftCamera.getAreaOfAprilTag());
                  telemetry.addData("X RightDistance",robot.rightCamera.getAreaOfAprilTag());
                  telemetry.addData("Estimated distance Right",Camera.GetDistanceFromArea(robot.leftCamera.getAreaOfAprilTag()));
                  telemetry.addData("Estimated distance Left",Camera.GetDistanceFromArea(robot.rightCamera.getAreaOfAprilTag()));
-
+                 telemetry.addData("X Distance Stero", robot.stereoCamera.compute_x_distance());
              }
              if (gamepad1.dpad_right) {
                 robot.leftCamera.find_april_tag();

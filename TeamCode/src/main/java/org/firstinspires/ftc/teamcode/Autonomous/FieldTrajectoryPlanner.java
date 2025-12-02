@@ -42,6 +42,11 @@ public class FieldTrajectoryPlanner {
                 .strafeToLinearHeading(new Vector2d(6*robot.autoPos.xMult, -6*robot.autoPos.yMult), Math.toRadians(45*robot.autoPos.yMult));
         return this;
     };
+    public FieldTrajectoryPlanner lineWithBackWall() {
+        builder = builder
+                .strafeToLinearHeading(new Vector2d(63*robot.autoPos.xMult, -36), Math.toRadians(45*robot.autoPos.yMult));
+        return this;
+    };
 
     public FieldTrajectoryPlanner returnToPark() {
         builder = builder
