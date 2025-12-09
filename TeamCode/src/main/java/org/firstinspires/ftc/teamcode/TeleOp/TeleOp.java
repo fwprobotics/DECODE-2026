@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 import org.firstinspires.ftc.teamcode.subsystems.StereoCamera;
 
 import java.util.Arrays;
+import java.util.Objects;
 //import org.firstinspires.ftc.teamcode.subsystems.Lift;
 //import org.firstinspires.ftc.teamcode.subsystems.Wrist;
 //import org.firstinspires.ftc.teamcode.util.TeleopActionRunner;
@@ -29,6 +30,7 @@ public class TeleOp extends LinearOpMode {
         TeleopActionRunner actionRunner = new TeleopActionRunner();
         Robot robot = new Robot(hardwareMap, telemetry, Robot.AutoPos.REDWALL, false);
         byte firing_pattern = 0;
+        drivetrain.imu.resetYaw();
         waitForStart();
         while (!isStopRequested()) {
             drivetrain.joystickMovement(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.right_stick_y, gamepad1.left_trigger >= .5, true, gamepad1.right_trigger >= .5);
@@ -40,13 +42,16 @@ public class TeleOp extends LinearOpMode {
                 robot.launcher.setFiringState(Launcher.FiringState.LOADED);
             }
             if (gamepad2.a ) {
-               robot.launcher.FireAtPower(.5F);
+               robot.launcher.FireAtY(1, 1.83);
             }
             if (gamepad2.b) {
                 robot.launcher.FireAtPower(.6F);
             }
             if (gamepad2.y) {
                 robot.launcher.FireAtPower(.7F);
+            }
+            if (gamepad1.y) {
+                drivetrain.imu.resetYaw();
             }
             if (gamepad2.x) {
                 robot.launcher.FireAtPower(.8F);
@@ -62,16 +67,21 @@ public class TeleOp extends LinearOpMode {
              }
 
              if (gamepad1.dpad_left) {
-                 telemetry.addData("X LeftDistance",robot.leftCamera.getAreaOfAprilTag());
-                 telemetry.addData("X RightDistance",robot.rightCamera.getAreaOfAprilTag());
-                 telemetry.addData("Estimated distance Right",Camera.GetDistanceFromArea(robot.leftCamera.getAreaOfAprilTag()));
-                 telemetry.addData("Estimated distance Left",Camera.GetDistanceFromArea(robot.rightCamera.getAreaOfAprilTag()));
-                 telemetry.addData("X Distance Stero", robot.stereoCamera.compute_x_distance());
+                 telemetry.addData("April Tag: ",robot.leftCamera.find_april_tag());
+                 if (robot.leftCamera.find_april_tag() == null) {continue;};
+                     double d_0 = robot.stereoCamera.compute_x_distance();
+                 telemetry.addData("Fire at time",robot.leftCamera.find_april_tag().id );
+                 telemetry.addData("X Distance Stero", d_0);
+
+                 double d_1 = Camera.GetDistanceFromArea(robot.leftCamera.getAreaOfAprilTag());
+                 double d_2 = Camera.GetDistanceFromArea(robot.rightCamera.getAreaOfAprilTag());
+                 telemetry.addData("Estimated distance Right",d_1);
+                 telemetry.addData("Estimated distance Left", d_2);
+                 telemetry.addData(" distance arithmatic", (d_2+d_1)/2);
+                 telemetry.addData(" distance geometric", Math.sqrt(d_1*d_2));
+                 telemetry.addData(" distance harmonic", 2/((1/d_1)+(1/d_2)));
              }
-             if (gamepad1.dpad_right) {
-                robot.leftCamera.find_april_tag();
-                robot.rightCamera.find_april_tag();
-             }
+
             telemetry.update();
         }
     }

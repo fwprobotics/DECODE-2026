@@ -39,18 +39,22 @@ public class FieldTrajectoryPlanner {
     };
     public FieldTrajectoryPlanner stepToShot() {
         builder = builder
-                .strafeToLinearHeading(new Vector2d(6*robot.autoPos.xMult, -6*robot.autoPos.yMult), Math.toRadians(45*robot.autoPos.yMult));
+                .strafeToLinearHeading(new Vector2d(-27*robot.autoPos.xMult, 16*robot.autoPos.yMult), Math.toRadians(175*robot.autoPos.yMult));
         return this;
     };
     public FieldTrajectoryPlanner lineWithBackWall() {
         builder = builder
-                .strafeToLinearHeading(new Vector2d(63*robot.autoPos.xMult, -36), Math.toRadians(45*robot.autoPos.yMult));
+                .strafeToLinearHeading(new Vector2d(12*robot.autoPos.xMult, 63*robot.autoPos.yMult), Math.toRadians(90*robot.autoPos.yMult));
         return this;
     };
 
     public FieldTrajectoryPlanner returnToPark() {
         builder = builder
-                .strafeToLinearHeading(new Vector2d(18*robot.autoPos.xMult, 42*robot.autoPos.yMult), Math.toRadians(-90*robot.autoPos.yMult));
+                .strafeToLinearHeading(new Vector2d(18*robot.autoPos.xMult, 42*robot.autoPos.yMult), Math.toRadians(-90*robot.autoPos.yMult))
+                .stopAndAdd(
+                new SequentialAction(
+
+                        robot.launcher.setFiringStateAction(Launcher.FiringState.LOADED)));
         return this;
     };
 
@@ -58,8 +62,8 @@ public class FieldTrajectoryPlanner {
         builder = builder.afterTime(.1, new SequentialAction())
                 .stopAndAdd(
                         new SequentialAction(
-                                robot.launcher.FireAtYAction(.9, 0),
-                                new SleepAction(2),
+                                robot.launcher.FireAtPowerAction(.8F),
+                                new SleepAction(1),
                                 robot.launcher.setFiringStateAction(Launcher.FiringState.FIRING),
                                 new SleepAction(.2),
                                 robot.intake.runIntakeAction(),

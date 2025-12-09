@@ -21,9 +21,10 @@ public class Camera extends Subsystem {
     double view_angle;
     VisionPortal visionPortal;
     public HuskyLens webcam;
+
     public Camera(String Cameramap, HardwareMap hardwareMap, Telemetry telemetry) {
         super(hardwareMap, telemetry);
-        this.view_angle = Math.PI/3;
+        this.view_angle = 2*Math.PI/3;
         webcam = hardwareMap.get(HuskyLens.class, Cameramap);
         webcam.selectAlgorithm(HuskyLens.Algorithm.TAG_RECOGNITION);
         initCV(Cameramap);
@@ -31,14 +32,12 @@ public class Camera extends Subsystem {
     public void initCV(String cameramap) {}
     public HuskyLens.Block find_april_tag() {
         HuskyLens.Block[] blocks = webcam.blocks();
-        telemetry.addData("BLOCKS:", Arrays.toString(blocks));
         if (blocks.length == 0) {
             telemetry.addData("FAILED TO FIND", blocks.length);
             return null;
         }
         HuskyLens.Block returnTag = blocks[0];
         for (HuskyLens.Block block : blocks) {
-            telemetry.addData("various blocks:", block.toString());
             if (block.width > returnTag.width) {
                 returnTag = block;
             }

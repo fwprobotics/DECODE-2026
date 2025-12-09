@@ -1,15 +1,6 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
-
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.ftc.Actions;
-
-import org.firstinspires.ftc.teamcode.Robot;
-
-import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -18,8 +9,7 @@ import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 
 @Autonomous
-public class MeetOneAuto extends LinearOpMode {
-
+public class BackUpAuto extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Robot.AutoPos autoPos = Robot.AutoPos.BLUEWALL;
@@ -42,8 +32,8 @@ public class MeetOneAuto extends LinearOpMode {
         Robot robot = new Robot(hardwareMap, telemetry, autoPos, false);
         Actions.runBlocking(robot.launcher.setFiringStateAction(Launcher.FiringState.LOADED));
         Action autoAction = robot.createTrajectoryPlanner()
-                .stepToShot()
-                .fireWholeMagazine()
+//                .stepToShot()
+//                .fireWholeMagazine()
                 .lineWithBackWall()
                 .builder.build();
 

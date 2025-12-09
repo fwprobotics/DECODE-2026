@@ -27,7 +27,7 @@ public class Robot {
         REDBASKET (1, 1),
         REDWALL (1, -1),
         BLUEBASKET ( -1, -1),
-        BLUEWALL (-1, 1);
+        BLUEWALL (1, 1);
         public int xMult;
         public int yMult;
         AutoPos(int xMult, int yMult) {
@@ -47,10 +47,10 @@ public class Robot {
         this.intake = new Intake(hardwareMap, telemetry);
         this.launcher = new Launcher(hardwareMap, telemetry);
         this.autoPos = autoPos;
-        this.startingPos = new Pose2d(12*autoPos.xMult, 68* autoPos.yMult, Math.toRadians(-90* autoPos.yMult));
+        this.startingPos = new Pose2d(64*autoPos.xMult, 16* autoPos.yMult, Math.toRadians(0* autoPos.yMult));
         this.drive = new MecanumDrive(hardwareMap, startingPos);
         this.leftCamera = new Camera("WebcamLeft", hardwareMap,telemetry);
-        this.rightCamera = new Camera("WebcamRight", hardwareMap,telemetry);
+        this.rightCamera = new Camera(  "WebcamRight", hardwareMap,telemetry);
         this.stereoCamera = new StereoCamera(this.leftCamera, this.rightCamera, hardwareMap, telemetry);
 
     }

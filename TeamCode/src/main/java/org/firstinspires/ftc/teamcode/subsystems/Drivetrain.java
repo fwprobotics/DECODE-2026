@@ -80,10 +80,13 @@ public class Drivetrain {
             if (leftStickX == 0 && leftStickY == 0) {
                 LeftStickAngle = 0;
             } else {
-                LeftStickAngle = Math.atan2(leftStickY, -leftStickX) -Math.PI/2;
+                LeftStickAngle = Math.atan2(leftStickY, -leftStickX) + Math.PI/2;
             }
-            double RobotAngle = imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle + Math.PI/2+Math.PI/4;
-            double NewLeftAngle = LeftStickAngle - RobotAngle;
+            double RobotAngle = imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle ;
+            realTelemetry.addData("ANGLE", RobotAngle);
+            realTelemetry.addData("LEFT STICK ANGLE", LeftStickAngle);
+
+            double NewLeftAngle = LeftStickAngle - RobotAngle + Math.PI/4;
             double magnitude = Math.sqrt(Math.pow(leftStickY, 2.0) + Math.pow(leftStickX, 2.0));
             double LeftX = Math.cos(NewLeftAngle) * magnitude;
             double LeftY = Math.sin(NewLeftAngle) * magnitude;
@@ -92,16 +95,7 @@ public class Drivetrain {
             frontRightVal = -((LeftY + RightX));
             backLeftVal = -(((LeftY - RightX)));
             backRightVal = -(((RightX) + LeftX));
-
-            realTelemetry.addData("left stick angle", LeftStickAngle);
-            realTelemetry.addData("imu angle 1", imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle);
-            realTelemetry.addData("imu angle 2", imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle);
-            realTelemetry.addData("imu angle 3", imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle);
-            realTelemetry.addData("FLV", frontLeftVal);
-            realTelemetry.addData("LeftX", LeftX);
-            realTelemetry.addData("RightX", RightX);
-            realTelemetry.addData("LeftY", LeftY);
-            realTelemetry.addData("Robot Angle", RobotAngle);}
+      }
     else {
 
 
@@ -127,11 +121,6 @@ public class Drivetrain {
         backLeftDrive.setPower(backLeftVal * slowModeMult * boostModeMult * TeleOpDTConstants.power_modifier);
         backRightDrive.setPower(backRightVal * slowModeMult  * boostModeMult  * TeleOpDTConstants.power_modifier);
 
-        realTelemetry.addData("Front Left", frontLeftDrive.getCurrentPosition());
-        realTelemetry.addData("Back Left", backLeftDrive.getCurrentPosition());
-        realTelemetry.addData("Front Right", frontRightDrive.getCurrentPosition());
-        realTelemetry.addData("Back Right", backRightDrive.getCurrentPosition());
-        realTelemetry.addData("Slow Mode Multiplier", slowModeMult);
     };
     double cubeInput (double input, double factor) {
         double cubedComponent = factor * Math.pow(input,3 );
