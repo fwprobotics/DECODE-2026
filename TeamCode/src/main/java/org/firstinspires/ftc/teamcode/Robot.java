@@ -7,10 +7,15 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.teamcode.Autonomous.FieldTrajectoryPlanner;
 import org.firstinspires.ftc.teamcode.subsystems.Camera;
+import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 import org.firstinspires.ftc.teamcode.subsystems.StereoCamera;
@@ -35,8 +40,11 @@ public class Robot {
             this.yMult = yMult;
         }
     }
+
+    public IMU imu;
     public AutoPos autoPos;
     public MecanumDrive drive;
+    public Drivetrain drivetrain;
     public Pose2d startingPos;
     public Intake intake;
     public Launcher launcher;
@@ -52,8 +60,9 @@ public class Robot {
         this.leftCamera = new Camera("WebcamLeft", hardwareMap,telemetry);
         this.rightCamera = new Camera(  "WebcamRight", hardwareMap,telemetry);
         this.stereoCamera = new StereoCamera(this.leftCamera, this.rightCamera, hardwareMap, telemetry);
-
     }
+
+
     public FieldTrajectoryPlanner createTrajectoryPlanner() {
         return new FieldTrajectoryPlanner(this);
     }

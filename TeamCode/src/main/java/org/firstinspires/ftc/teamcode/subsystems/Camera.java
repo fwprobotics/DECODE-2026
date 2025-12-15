@@ -51,6 +51,21 @@ public class Camera extends Subsystem {
         }
         return aprilTag.width * aprilTag.height;
     }
+    public HuskyLens.Block findGoalAprilTag() {
+        HuskyLens.Block[] blocks = webcam.blocks();
+        if (blocks.length == 0) {
+            telemetry.addData("FAILED TO FIND", blocks.length);
+            return null;
+        }
+        HuskyLens.Block returnTag = blocks[0];
+        for (HuskyLens.Block block : blocks) {
+
+            if (block.width > returnTag.width && block.id < 4) {
+                returnTag = block;
+            }
+        }
+        return returnTag;
+    }
     public static double GetDistanceFromArea(double Area) {
         return Math.sqrt(2700.43138/(Area - 14.09491));
     }

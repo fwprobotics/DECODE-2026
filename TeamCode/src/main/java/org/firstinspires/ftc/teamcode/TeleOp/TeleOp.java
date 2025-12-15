@@ -7,6 +7,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 //import org.firstinspires.ftc.teamcode.Robot;
 //import org.firstinspires.ftc.teamcode.subsystems.Arm;
 //import org.firstinspires.ftc.teamcode.subsystems.Claw;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.TeleopActionRunner;
 import org.firstinspires.ftc.teamcode.subsystems.Camera;
@@ -30,10 +33,21 @@ public class TeleOp extends LinearOpMode {
         TeleopActionRunner actionRunner = new TeleopActionRunner();
         Robot robot = new Robot(hardwareMap, telemetry, Robot.AutoPos.REDWALL, false);
         byte firing_pattern = 0;
+        boolean fieldRelative = true;
         drivetrain.imu.resetYaw();
+        while (!gamepad1.dpad_left) {
+            if (gamepad1.x) {
+                fieldRelative = false;
+            }
+        }
         waitForStart();
         while (!isStopRequested()) {
-            drivetrain.joystickMovement(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.right_stick_y, gamepad1.left_trigger >= .5, true, gamepad1.right_trigger >= .5);
+            double d_x = 0;
+            if (gamepad1.right_trigger>.5) {
+                 d_x = robot.stereoCamera.findAngleToAprilTag();
+            }
+            telemetry.addData("steering", d_x);
+            drivetrain.joystickMovement(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x+d_x, gamepad1.right_stick_y, gamepad1.left_bumper, fieldRelative, gamepad1.right_bumper);
             robot.launcher.FireAtPower(gamepad2.left_trigger);
             if (gamepad2.left_bumper) {
                 robot.launcher.setFiringState(Launcher.FiringState.FIRING);
@@ -56,13 +70,13 @@ public class TeleOp extends LinearOpMode {
             if (gamepad2.x) {
                 robot.launcher.FireAtPower(.8F);
             }
-            if (gamepad1.dpad_up) {
+            if (gamepad1.x) {
                 robot.intake.runIntake();
             }
-             if (gamepad1.a) {
+             if (gamepad1.b) {
                  robot.intake.reset();
             }
-             if (gamepad1.dpad_down) {
+             if (gamepad1.a) {
                  robot.intake.reverseIntake();
              }
 
@@ -75,14 +89,24 @@ public class TeleOp extends LinearOpMode {
 
                  double d_1 = Camera.GetDistanceFromArea(robot.leftCamera.getAreaOfAprilTag());
                  double d_2 = Camera.GetDistanceFromArea(robot.rightCamera.getAreaOfAprilTag());
-                 telemetry.addData("Estimated distance Right",d_1);
-                 telemetry.addData("Estimated distance Left", d_2);
-                 telemetry.addData(" distance arithmatic", (d_2+d_1)/2);
-                 telemetry.addData(" distance geometric", Math.sqrt(d_1*d_2));
-                 telemetry.addData(" distance harmonic", 2/((1/d_1)+(1/d_2)));
              }
+
 
             telemetry.update();
         }
     }
+    public void TurnToAprilTag(Robot robot, Drivetrain drivetrain) {
+        double d_x = robot.stereoCamera.findAngleToAprilTag();
+        double RightX = d_x;
+        double frontLeftVal = RightX;
+        double frontRightVal = -RightX;
+        double backLeftVal = RightX;
+        double backRightVal = -RightX;
+        telemetry.addData("d_x", d_x);
+        drivetrain.frontLeftDrive.setPower(frontLeftVal);
+        drivetrain.frontRightDrive.setPower(frontRightVal);
+        drivetrain.backLeftDrive.setPower(backLeftVal );
+        drivetrain.backRightDrive.setPower(backRightVal );
+    }
 }
+

@@ -16,11 +16,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Autonomous.FieldTrajectoryPlanner;
+import org.firstinspires.ftc.teamcode.Robot;
 //import org.firstinspires.ftc.teamcode.util.ToggleButton;
 // Want to toggle between this and normal driving
 
 public class Drivetrain {
-    private DcMotor frontLeftDrive, frontRightDrive, backLeftDrive, backRightDrive;
+    public DcMotor frontLeftDrive, frontRightDrive, backLeftDrive, backRightDrive;
     public LinearOpMode OpMode;
     public Telemetry realTelemetry;
     public IMU imu;
@@ -87,7 +89,7 @@ public class Drivetrain {
             realTelemetry.addData("LEFT STICK ANGLE", LeftStickAngle);
 
             double NewLeftAngle = LeftStickAngle - RobotAngle + Math.PI/4;
-            double magnitude = Math.sqrt(Math.pow(leftStickY, 2.0) + Math.pow(leftStickX, 2.0));
+            double magnitude = Math.sqrt(Math.pow(cubeInput(leftStickY, TeleOpDTConstants.speedFactor), 2.0) + Math.pow(cubeInput(leftStickX, TeleOpDTConstants.speedFactor), 2.0));
             double LeftX = Math.cos(NewLeftAngle) * magnitude;
             double LeftY = Math.sin(NewLeftAngle) * magnitude;
             double RightX = rightStickX;
@@ -122,6 +124,8 @@ public class Drivetrain {
         backRightDrive.setPower(backRightVal * slowModeMult  * boostModeMult  * TeleOpDTConstants.power_modifier);
 
     };
+
+
     double cubeInput (double input, double factor) {
         double cubedComponent = factor * Math.pow(input,3 );
         double linearComponent = input * (1 - factor);
