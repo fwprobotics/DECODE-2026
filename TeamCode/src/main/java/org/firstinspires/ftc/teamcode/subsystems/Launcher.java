@@ -15,47 +15,34 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import java.util.Vector;
 
 public class Launcher extends  Subsystem {
-    public enum FiringState {
-        LOADED(1),
-        FIRING(.25);
-        public final double pos;
-        FiringState(double pos) {
-            this.pos = pos;
-        }
-    }
+
     double Launch_angle =  Math.toRadians(45);
     double g = -9.8;
-    Servo stopperServo;
     double wheel_radius_meters = .036;
     double y_0 = .2;
     double Launch_Angle;
-    DcMotor leftLaunchMotor , rightLaunchMotor ;
+    DcMotor LaunchMotor ;
     public Launcher(HardwareMap hardwareMap, Telemetry telemetry) {
         super(hardwareMap, telemetry);
-        leftLaunchMotor = hardwareMap.dcMotor.get("leftLaunch");
-        rightLaunchMotor = hardwareMap.dcMotor.get("rightLaunch");
-        this.configure_motors(leftLaunchMotor, rightLaunchMotor);
-        stopperServo = hardwareMap.servo.get("stopperServo");
+        LaunchMotor = hardwareMap.dcMotor.get("Launch");
+        this.configure_motors(LaunchMotor);
+//        stopperServo = hardwareMap.servo.get("stopperServo");
     }
-    void configure_motors(DcMotor leftLaunchMotor, DcMotor rightLaunchMotor) {
-        leftLaunchMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightLaunchMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftLaunchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        rightLaunchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        leftLaunchMotor.setDirection(DcMotor.Direction.REVERSE);
+    void configure_motors(DcMotor LaunchMotor) {
+        LaunchMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        LaunchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        LaunchMotor.setDirection(DcMotor.Direction.REVERSE);
     }
     public void FireAtY(double target_pos_y_in, double distance_in) {
         double velocity = distance_to_velocity(distance_in, target_pos_y_in,  0);
         telemetry.addData("VELOCITY", velocity);
         double motor_power = velocity_to_motor_power(velocity);
-        leftLaunchMotor.setPower(motor_power);
-        rightLaunchMotor.setPower(motor_power);
+        LaunchMotor.setPower(motor_power);
         telemetry.addData("MOTOR POWER", motor_power);
 
     }
     public void FireAtPower(float power) {
-        leftLaunchMotor.setPower(power);
-        rightLaunchMotor.setPower(power);
+        LaunchMotor.setPower(power);
     }
     public Action FireAtYAction(double target_pos_y_in, double distance_in) {
         return telemetryPacket -> {
@@ -86,33 +73,12 @@ public class Launcher extends  Subsystem {
     };
     public Action reset() {
         return TelemetryPacket -> {
-            rightLaunchMotor.setPower((0));
-            leftLaunchMotor.setPower((0));
+            LaunchMotor.setPower((0));
             return false;
         };
     };
     double velocity_to_motor_power (double velocity) {
         return 0.01307*2*velocity;
     }
-    public Action setFiringStateAction(FiringState state) {
-        return TelemetryPacket -> {
-            setFiringState(state);
-        return false;};
-    }
-    public void setFiringState(FiringState state) {
-        stopperServo.setPosition(state.pos);
-    }
-    public void quickFire() {
-        stopperServo.setPosition(FiringState.FIRING.pos);
-        new SleepAction(.5);
-        stopperServo.setPosition(FiringState.LOADED.pos);
-
-    }
-    public Action quickFireAction() {
-        return TelemetryPacket ->{
-            this.quickFire();
-            return false;
-        };
-    };
 
 }

@@ -53,11 +53,11 @@ public class FieldTrajectoryPlanner {
 
     public FieldTrajectoryPlanner returnToPark() {
         builder = builder
-                .strafeToLinearHeading(new Vector2d(18*robot.autoPos.xMult, 42*robot.autoPos.yMult), Math.toRadians(-90*robot.autoPos.yMult))
-                .stopAndAdd(
-                new SequentialAction(
+                .strafeToLinearHeading(
+                        new Vector2d(18*robot.autoPos.xMult, 42*robot.autoPos.yMult), Math.toRadians(-90*robot.autoPos.yMult)
+                );
 
-                        robot.launcher.setFiringStateAction(Launcher.FiringState.LOADED)));
+//                        robot.launcher.setFiringStateAction(Launcher.FiringState.LOADED)));
         return this;
     };
 
@@ -67,7 +67,7 @@ public class FieldTrajectoryPlanner {
                         new SequentialAction(
                                 robot.launcher.FireAtPowerAction(.8F),
                                 new SleepAction(1),
-                                robot.launcher.setFiringStateAction(Launcher.FiringState.FIRING),
+//                                robot.launcher.setFiringStateAction(Launcher.FiringState.FIRING),
                                 new SleepAction(.2),
                                 robot.intake.runIntakeAction(),
                                 new SleepAction(.75),
@@ -77,8 +77,8 @@ public class FieldTrajectoryPlanner {
                                 new SleepAction(.75),
                                 robot.intake.resetAction(),
                                 new SleepAction(.75),
-                                robot.launcher.reset(),
-                                robot.launcher.setFiringStateAction(Launcher.FiringState.LOADED)
+                                robot.launcher.reset()
+                             //   ,robot.launcher.setFiringStateAction(Launcher.FiringState.LOADED)
                         ));
         return this;
     };
