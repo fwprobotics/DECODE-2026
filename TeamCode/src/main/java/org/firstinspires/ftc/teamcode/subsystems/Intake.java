@@ -9,16 +9,22 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Intake extends Subsystem {
-    DcMotor intakeMotor;
+
+    DcMotor intakeLeftMotor;
+    DcMotor intakeRightMotor;
+
     public Intake(HardwareMap hardwareMap, Telemetry telemetry) {
         super(hardwareMap, telemetry);
-        intakeMotor = hardwareMap.dcMotor.get("intake");
+        intakeLeftMotor = hardwareMap.dcMotor.get("intakeleft");
+        intakeRightMotor = hardwareMap.dcMotor.get("intakeright");
     };
     public void runIntake()  {
-        intakeMotor.setPower(.8);
+        intakeLeftMotor.setPower(.8);
+        intakeRightMotor.setPower(.8);
     };
     public void reverseIntake()  {
-        intakeMotor.setPower(-.8);
+        intakeLeftMotor.setPower(-.8);
+        intakeRightMotor.setPower(-.8);
     };
     public Action runIntakeAction() {
             return TelemetryPacket -> {
@@ -37,7 +43,20 @@ public class Intake extends Subsystem {
     public Action resetAction()  {
         return TelemetryPacket -> { this.reset();return false;};
     };
-    public void reset() {
-        intakeMotor.setPower(0);
+
+    public Action stallAction()  {
+        return TelemetryPacket -> { this.stall();return false;};
     };
+
+    public void reset() {
+        intakeLeftMotor.setPower(0);
+        intakeRightMotor.setPower(0);
+    };
+
+    public void stall() {
+        int rightspeed = intakeRightMotor.getCurrentPosition();
+        int leftspeed = intakeLeftMotor.getCurrentPosition();
+        intakeRightMotor.setTargetPosition(rightspeed);
+        intakeLeftMotor.setTargetPosition(leftspeed);
+    }
 }
