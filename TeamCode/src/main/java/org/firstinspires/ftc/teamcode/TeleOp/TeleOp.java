@@ -35,11 +35,11 @@ public class TeleOp extends LinearOpMode {
         byte firing_pattern = 0;
         boolean fieldRelative = true;
         drivetrain.imu.resetYaw();
-        while (!gamepad1.dpad_left) {
-            if (gamepad1.x) {
-                fieldRelative = false;
-            }
-        }
+//        while (!gamepad1.dpad_left) {
+//            if (gamepad1.x) {
+//                fieldRelative = false;
+//            }
+//        }
         waitForStart();
         while (!isStopRequested()) {
             double d_x = 0;
@@ -64,13 +64,13 @@ public class TeleOp extends LinearOpMode {
             if (gamepad2.y) {
                 robot.launcher.FireAtPower(.7F);
             }
-            if (gamepad1.y) {
+            if (gamepad1.x) {
                 drivetrain.imu.resetYaw();
             }
             if (gamepad2.x) {
                 robot.launcher.FireAtPower(.8F);
             }
-            if (gamepad1.x) {
+            if (gamepad1.y) {
                 robot.intake.runIntake();
             }
              if (gamepad1.b) {
