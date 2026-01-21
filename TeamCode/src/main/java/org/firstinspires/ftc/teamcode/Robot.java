@@ -30,6 +30,7 @@ import org.firstinspires.ftc.teamcode.subsystems.StereoCamera;
 //import org.firstinspires.ftc.teamcode.subsystems.Wrist;
 
 public class Robot {
+    // i will eat your children
     public enum AutoPos {
         REDBASKET (1, 1),
         REDWALL (1, -1),
