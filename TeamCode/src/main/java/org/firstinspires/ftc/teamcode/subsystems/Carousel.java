@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import static java.util.Map.entry;
 
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -75,7 +76,7 @@ public class Carousel extends Subsystem {
             case Iblue:
                 MagazineState.put(CarouselState.Fblue, isGreen());break;
             case Igreen:
-                MagazineState.put(CarouselState.Fblue, isGreen()); break;}
+                MagazineState.put(CarouselState.Fgreen, isGreen()); break;}
     }
     public void FireGreen(){
         for (Map.Entry<CarouselState, Integer> entry : MagazineState.entrySet()) {
@@ -107,5 +108,16 @@ public class Carousel extends Subsystem {
     public void SetManualCarouselState (double position) {
         carouselServo.setPosition(position);
     }
-
+    public Action FirePurpleAction() {
+        return telemetryPacket -> {
+            this.FirePurple();
+            return false;
+        };
+    }
+    public Action FireGreenAction() {
+        return telemetryPacket -> {
+            this.FireGreen();
+            return false;
+        };
+    }
 }

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -25,5 +26,13 @@ public class FiringArm extends Subsystem{
     public void setFiringState(FiringState state) {
         this.armServo.setPosition(state.pos);
     }
+
+    public Action setFiringStateAction(FiringState state) {
+        return telemetryPacket -> {
+            this.setFiringState(state);
+            return false;
+        };
+    }
+
 
 }

@@ -68,7 +68,7 @@ public class Drivetrain {
     public static double clamp(double val, double min, double max) {
         return Math.max(min, Math.min(max, val));
     }
-    public void joystickMovement(double leftStickY, double leftStickX, double rightStickX, double rightstickY, boolean slowModeControl, boolean fieldRelativeToggle, boolean boostButton) {
+    public void joystickMovement(double leftStickY, double leftStickX, double rightStickX, double rightstickY, boolean slowModeControl, boolean fieldRelativeToggle, boolean boostButton, boolean DEBUGMODE) {
         double frontRightVal;
         double frontLeftVal;
         double backLeftVal;
@@ -82,13 +82,14 @@ public class Drivetrain {
             if (leftStickX == 0 && leftStickY == 0) {
                 LeftStickAngle = 0;
             } else {
-                LeftStickAngle = Math.atan2(leftStickY, -leftStickX) + Math.PI/2;
+                LeftStickAngle = Math.atan2(leftStickY, -leftStickX) ;
             }
             double RobotAngle = imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle ;
+            if (DEBUGMODE){
             realTelemetry.addData("ANGLE", RobotAngle);
-            realTelemetry.addData("LEFT STICK ANGLE", LeftStickAngle);
+            realTelemetry.addData("LEFT STICK ANGLE", LeftStickAngle);}
 
-            double NewLeftAngle = LeftStickAngle - RobotAngle + Math.PI/4;
+            double NewLeftAngle = LeftStickAngle - RobotAngle;
             double magnitude = Math.sqrt(Math.pow(cubeInput(leftStickY, TeleOpDTConstants.speedFactor), 2.0) + Math.pow(cubeInput(leftStickX, TeleOpDTConstants.speedFactor), 2.0));
             double LeftX = Math.cos(NewLeftAngle) * magnitude;
             double LeftY = Math.sin(NewLeftAngle) * magnitude;

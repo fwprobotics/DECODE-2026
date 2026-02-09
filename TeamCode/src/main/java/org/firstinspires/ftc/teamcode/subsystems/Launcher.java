@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import static java.lang.Double.NaN;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -57,6 +58,7 @@ public class Launcher extends  Subsystem {
             return false;
         };
     }
+
      double distance_to_velocity (double x_pos_feet, double target_pos_feet, double tolerance){
          // double c = y_0 + (target_pos_feet+tolerance)*0.3048 - Math.tan(Launch_Angle)*(x_pos_feet*0.3048);
          double c = y_0 + target_pos_feet+tolerance - x_pos_feet;
