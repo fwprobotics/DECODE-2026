@@ -9,10 +9,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class FiringArm extends Subsystem{
 
     public enum FiringState {
-        waiting(0),
+        waiting(.2),
         firing(1);
-
-        double pos;
+        final double pos;
         FiringState(double position) {
             this.pos  = position;
         }
@@ -20,8 +19,7 @@ public class FiringArm extends Subsystem{
     Servo armServo;
     public FiringArm(HardwareMap hardwareMap, Telemetry telemetry) {
         super(hardwareMap, telemetry);
-        armServo = hardwareMap.servo.get("ArmServo");
-    }
+        armServo = hardwareMap.servo.get("ArmServo");}
 
     public void setFiringState(FiringState state) {
         this.armServo.setPosition(state.pos);
@@ -31,8 +29,6 @@ public class FiringArm extends Subsystem{
         return telemetryPacket -> {
             this.setFiringState(state);
             return false;
-        };
-    }
-
+        };}
 
 }

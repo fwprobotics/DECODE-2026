@@ -45,15 +45,20 @@ public class Carousel extends Subsystem {
         }
         public CarouselState next() {
           // No bounds checking required here, because the last instance overrides
-          return values()[ordinal() + 1];
-      }
+            for(CarouselState e: CarouselState.values()) {
+                if(e.pos == (this.pos + .2) %1 ) {
+                    return e;
+                }
+            }
+            return this;
+        }
     }
     public Carousel(HardwareMap hardwareMap, Telemetry telemetry) {
         super(hardwareMap, telemetry);
         carouselServo = hardwareMap.servo.get("CarouselServo");
         sensorColor = hardwareMap.get(ColorSensor.class, "colorsensor");
         this.SetCarouselState(CarouselState.Ired);
-        carouselState = CarouselState.Ired;
+        carouselState = CarouselState.Fred;
 
     }
     public void SetCarouselState(CarouselState state) {
@@ -91,12 +96,16 @@ public class Carousel extends Subsystem {
     public void BallFired() {
         MagazineState.put(carouselState, 0);
     }
+    public Action BallFiredAction() {
+        return telemetryPacket -> {
+            this.BallFired();
+            return false;
+        };    }
     public void FirePurple(){
         for (Map.Entry<CarouselState, Integer> entry : MagazineState.entrySet()) {
             if (entry.getValue() == 1) {
                 SetCarouselState(entry.getKey());
                 carouselState = entry.getKey();
-                // MagazineState.put(entry.getKey(), 0);
             }
         }
     }

@@ -21,33 +21,31 @@ public class Launcher extends  Subsystem {
     double g = -9.8;
     double wheel_radius_meters = .036;
     double y_0 = .2;
+    double MAX_FIRING_RANGE = 100000;
     double Launch_Angle;
     DcMotor LaunchMotor ;
     public Launcher(HardwareMap hardwareMap, Telemetry telemetry) {
         super(hardwareMap, telemetry);
         LaunchMotor = hardwareMap.dcMotor.get("Launch");
         this.configure_motors(LaunchMotor);
-//        stopperServo = hardwareMap.servo.get("stopperServo");
     }
     void configure_motors(DcMotor LaunchMotor) {
         LaunchMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         LaunchMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         LaunchMotor.setDirection(DcMotor.Direction.REVERSE);
     }
-    public void FireAtY(double target_pos_y_in, double distance_in) {
-        double velocity = distance_to_velocity(distance_in, target_pos_y_in,  0);
-        telemetry.addData("VELOCITY", velocity);
+    public void FireAtY(double target_pos_y, double distance) {
+        double velocity = distance_to_velocity(distance, target_pos_y,  0);
         double motor_power = velocity_to_motor_power(velocity);
         LaunchMotor.setPower(motor_power);
-        telemetry.addData("MOTOR POWER", motor_power);
 
     }
     public void FireAtPower(float power) {
         LaunchMotor.setPower(power);
     }
-    public Action FireAtYAction(double target_pos_y_in, double distance_in) {
+    public Action FireAtYAction(double target_pos_y, double distance) {
         return telemetryPacket -> {
-            this.FireAtY(target_pos_y_in, distance_in);
+            this.FireAtY(in_to_m(target_pos_y), in_to_m(distance));
             return false;
         };
     }
@@ -59,13 +57,10 @@ public class Launcher extends  Subsystem {
         };
     }
 
-     double distance_to_velocity (double x_pos_feet, double target_pos_feet, double tolerance){
-         // double c = y_0 + (target_pos_feet+tolerance)*0.3048 - Math.tan(Launch_Angle)*(x_pos_feet*0.3048);
-         double c = y_0 + target_pos_feet+tolerance - x_pos_feet;
-
-         double v_squared = (this.g * c * Math.pow(x_pos_feet, 2)) / (2*Math.pow(Math.cos(Launch_Angle),2));
+     double distance_to_velocity (double x_pos, double target_pos, double tolerance){
+         double c = y_0 + target_pos+tolerance - x_pos;
+         double v_squared = (this.g * c * Math.pow(x_pos, 2)) / (2*Math.pow(Math.cos(Launch_Angle),2));
          telemetry.addData("V_SQUARED", v_squared);
-
          if (v_squared <= 0) {
             return 0;
         }
@@ -80,7 +75,10 @@ public class Launcher extends  Subsystem {
         };
     };
     double velocity_to_motor_power (double velocity) {
-        return 0.01307*2*velocity;
+        return velocity/MAX_FIRING_RANGE;
     }
 
+    public double in_to_m(double quantity) {
+    return quantity*0.0254;
+    }
 }

@@ -15,7 +15,7 @@ public class Intake extends Subsystem {
 
     public Intake(HardwareMap hardwareMap, Telemetry telemetry) {
         super(hardwareMap, telemetry);
-        intakeMotor = hardwareMap.dcMotor.get("intakeMotor");
+        intakeMotor = hardwareMap.dcMotor.get("intakeRight");
   //      intakeRightMotor = hardwareMap.dcMotor.get("intakeright");
     };
     public void runIntake()  {

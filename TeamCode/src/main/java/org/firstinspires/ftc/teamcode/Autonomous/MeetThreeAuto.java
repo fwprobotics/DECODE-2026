@@ -14,10 +14,11 @@ import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 @Autonomous
 public class MeetThreeAuto extends LinearOpMode {
 
+    int sequence;
     @Override
     public void runOpMode() throws InterruptedException {
         Robot.AutoPos autoPos = Robot.AutoPos.BLUEWALL;
-        while (!gamepad1.dpad_left) {
+        while (!gamepad1.x) {
             if (gamepad1.dpad_down) {
                 autoPos = Robot.AutoPos.REDWALL;
             } else if (gamepad1.dpad_up) {
@@ -28,18 +29,28 @@ public class MeetThreeAuto extends LinearOpMode {
             } else if (gamepad1.dpad_right) {
                 autoPos = Robot.AutoPos.BLUEBASKET;
             }
-            telemetry.addData("starting pos", autoPos);
+            telemetry.addData("CURRENT POSITION: ", autoPos);
             telemetry.update();
         }
-        telemetry.addData("ready for ", autoPos);
+        telemetry.addData("READY FOR: ", autoPos);
         telemetry.update();
         Robot robot = new Robot(hardwareMap, telemetry, autoPos, false);
+        int guess = robot.stereoCamera.getSequence();
+        FieldTrajectoryPlanner traj = robot.createTrajectoryPlanner()
+                .stepToShot();
+        if (guess> 10) {
+            sequence = guess % 10;
+            telemetry.addData("SEQUENCE BEING USED: ", sequence);
+            telemetry.update();
+            traj = traj.fireWholeMagazineInSequence(sequence % 10);
+        }
+        else {
+            traj = traj.determineThenFire();
+        }
         Actions.runBlocking(robot.firingArm.setFiringStateAction(FiringArm.FiringState.waiting));
-        Action autoAction = robot.createTrajectoryPlanner()
-                .stepToShot()
-                .fireWholeMagazineInSequence(robot.leftCamera.find_april_tag().id % 10)
-                .lineWithBackWall()
-                .builder.build();
+
+        traj = traj.lineWithBackWall();
+        Action autoAction = traj.builder.build();
 
         waitForStart();
 

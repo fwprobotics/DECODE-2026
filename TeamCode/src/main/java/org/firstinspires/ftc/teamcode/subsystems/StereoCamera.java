@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.openftc.apriltag.AprilTagDetection;
 
 public class StereoCamera extends Subsystem {
-    double camera_distance= .17;
+    double camera_distance= .31;
     Camera left_camera;
     Camera right_camera;
     public StereoCamera( Camera left_camera, Camera right_camera, HardwareMap hardwareMap, Telemetry telemetry) {
@@ -16,6 +16,29 @@ public class StereoCamera extends Subsystem {
         this.left_camera = left_camera;
         this.right_camera = right_camera;
     }
+
+    public int getSequence() {
+        HuskyLens.Block tag_left = left_camera.findGoalAprilTag();
+        HuskyLens.Block tag_right = left_camera.findGoalAprilTag();
+        if (tag_left == null && tag_right == null) {
+            return  0 ;
+        }
+        else if (tag_right == null) {
+            return tag_left.id;
+        }
+        else if (tag_left == null) {
+            return tag_right.id;
+        }
+        else if (tag_left.id == tag_right.id) {
+            return tag_left.id;
+        }
+        else {
+            telemetry.addData("DISAGREEMENT ON ID, left found: ", tag_left.id);
+            return tag_right.id;
+        }
+
+    }
+
     public static class StereoConfig {
         public static double x_distance = 1;
         public static double y_distance = 1;
@@ -27,8 +50,7 @@ public class StereoCamera extends Subsystem {
         HuskyLens.Block right_camera_april_tag = this.right_camera.findGoalAprilTag();
         HuskyLens.Block left_camera_april_tag = this.left_camera.findGoalAprilTag();
         if (right_camera_april_tag == null || left_camera_april_tag == null) return -1;
-        telemetry.addData("left X", left_camera_april_tag.x);
-        telemetry.addData("right X", right_camera_april_tag.x);
+
 
         double x_distance = 0;
         double numerator = this.camera_distance * this.right_camera.view_angle;
@@ -41,6 +63,15 @@ public class StereoCamera extends Subsystem {
         return x_distance/.0024;
     }
 
+    public void getCameraInformation() {
+        HuskyLens.Block right_camera_april_tag = this.right_camera.findGoalAprilTag();
+        HuskyLens.Block left_camera_april_tag = this.left_camera.findGoalAprilTag();
+        telemetry.addData("left april tag Pos X: ", left_camera_april_tag.x);
+        telemetry.addData("right april tag POS X: ", right_camera_april_tag.x);
+        telemetry.addData("Left Coordinate Transform: ",  320 - left_camera_april_tag.x);
+        telemetry.addData("Right Coordinate Transform: ",  right_camera_april_tag.x);
+        telemetry.addData("April Tag Turn Amount: ", this.findAngleToAprilTag()/.0024);
+    }
     public double findAngleToAprilTag() {
         HuskyLens.Block tag_left = this.left_camera.findGoalAprilTag();
         HuskyLens.Block tag_right = this.right_camera.findGoalAprilTag();
@@ -50,23 +81,17 @@ public class StereoCamera extends Subsystem {
 
         if (tag_right == null ) {
              d_x =  320 - tag_left.x;
-             id = tag_left.id
-;        }
+             id = tag_left.id;}
         else if (tag_left == null) {
              d_x =  tag_right.x;
-            id = tag_right.id;
-
-        }
+            id = tag_right.id;}
         else if ( tag_right.id > 3) {
              d_x = 320 - tag_left.x - tag_right.x;
-            id = tag_right.id;
-
-        }
+            id = tag_right.id;}
 
         double difference = .0024*d_x;
         if (Math.abs(difference) <= .01 || id <= 3) {
-            return 0;
-        }
+            return 0;}
         return difference;
     }
 }
